@@ -48,7 +48,7 @@ public class Frame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SalarySync");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setPreferredSize(new java.awt.Dimension(1200, 612));
+        setPreferredSize(new java.awt.Dimension(1000, 612));
 
         jPanel3.setPreferredSize(new java.awt.Dimension(500, 0));
 
@@ -207,7 +207,7 @@ public class Frame extends javax.swing.JFrame {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1308, Short.MAX_VALUE)
+            .addGap(0, 1069, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -238,10 +238,8 @@ public class Frame extends javax.swing.JFrame {
         
         //CHECK WHETHER THE USER AND PASS ARE AUTHENTIC OR NOT
         if (user.equals("testgmail@.com") && pass.equals("joross12345")) {
-            NewPage page = new NewPage();
-            page.setVisible(true);
-            JLabel wel_label = new JLabel("Welcome" + user);
-            page.getContentPane().add(wel_label);
+           Frame2 main = new Frame2();
+            main.setVisible(true);
         } else {
             System.out.println("Please enter valid username and password!");
         }
