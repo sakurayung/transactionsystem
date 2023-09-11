@@ -4,14 +4,25 @@
  */
 package tpspackage;
 
+import java.awt.Component;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 
 /**
  *
  * @author PC
  */
 public class Frame extends javax.swing.JFrame {
-
+     //---------------------DATABASE-------------------------
+     String jdbcUrl = "jdbc:mysql://localhost:3306/connector";
+        String username = "root";
+        String password = "root";
     /**
      * Creates new form Frame
      */
@@ -34,21 +45,27 @@ public class Frame extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        textfield1 = new javax.swing.JTextField();
+        email = new javax.swing.JTextField();
         jPanel6 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        passfield1 = new javax.swing.JPasswordField();
+        pass = new javax.swing.JPasswordField();
         jCheckBox1 = new javax.swing.JCheckBox();
         jPanel9 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
+        jPanel10 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jPanel11 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SalarySync");
+        setAutoRequestFocus(false);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setPreferredSize(new java.awt.Dimension(1000, 612));
+        setName("frame"); // NOI18N
+        setPreferredSize(new java.awt.Dimension(1200, 612));
 
         jPanel3.setPreferredSize(new java.awt.Dimension(500, 0));
 
@@ -62,16 +79,16 @@ public class Frame extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(76, 76, 76)
+                .addGap(74, 74, 74)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(136, Short.MAX_VALUE))
+                .addContainerGap(138, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(85, Short.MAX_VALUE)
+                .addContainerGap(93, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(14, 14, 14))
+                .addContainerGap())
         );
 
         jPanel3.add(jPanel1);
@@ -83,9 +100,9 @@ public class Frame extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel2.setText("Email Address");
 
-        textfield1.addActionListener(new java.awt.event.ActionListener() {
+        email.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textfield1ActionPerformed(evt);
+                emailActionPerformed(evt);
             }
         });
 
@@ -97,7 +114,7 @@ public class Frame extends javax.swing.JFrame {
                 .addGap(62, 62, 62)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(textfield1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(email, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(138, Short.MAX_VALUE))
         );
@@ -107,7 +124,7 @@ public class Frame extends javax.swing.JFrame {
                 .addContainerGap(35, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addGap(0, 0, 0)
-                .addComponent(textfield1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(22, 22, 22))
@@ -125,12 +142,12 @@ public class Frame extends javax.swing.JFrame {
         jLabel3.setText("Password");
         jPanel8.add(jLabel3, java.awt.BorderLayout.PAGE_START);
 
-        passfield1.addActionListener(new java.awt.event.ActionListener() {
+        pass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                passfield1ActionPerformed(evt);
+                passActionPerformed(evt);
             }
         });
-        jPanel8.add(passfield1, java.awt.BorderLayout.CENTER);
+        jPanel8.add(pass, java.awt.BorderLayout.CENTER);
 
         jCheckBox1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jCheckBox1.setText("Remember me");
@@ -203,15 +220,40 @@ public class Frame extends javax.swing.JFrame {
         jPanel4.setBackground(new java.awt.Color(102, 0, 0));
         jPanel4.setPreferredSize(new java.awt.Dimension(1000, 612));
 
+        jPanel10.setBackground(new java.awt.Color(102, 0, 0));
+
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tpspackage/rsz_university_of_mindanao_logo_3.png"))); // NOI18N
+        jPanel10.add(jLabel4);
+
+        jPanel11.setBackground(new java.awt.Color(102, 0, 0));
+        jPanel11.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel5.setBackground(new java.awt.Color(102, 0, 0));
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tpspackage/Add a heading.png"))); // NOI18N
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1069, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 525, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(1648, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 612, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(159, 159, 159)
+                .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, 439, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(87, 87, 87))
         );
 
         getContentPane().add(jPanel4, java.awt.BorderLayout.CENTER);
@@ -219,30 +261,50 @@ public class Frame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void textfield1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textfield1ActionPerformed
+    private void emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailActionPerformed
         
         
-    }//GEN-LAST:event_textfield1ActionPerformed
+    }//GEN-LAST:event_emailActionPerformed
 
-    private void passfield1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passfield1ActionPerformed
+    private void passActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passActionPerformed
         
-    }//GEN-LAST:event_passfield1ActionPerformed
+    }//GEN-LAST:event_passActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
         
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       String user = textfield1.getText();
-        String pass = passfield1.getText();
-        
-        //CHECK WHETHER THE USER AND PASS ARE AUTHENTIC OR NOT
-        if (user.equals("testgmail@.com") && pass.equals("joross12345")) {
-           Frame2 main = new Frame2();
-            main.setVisible(true);
-        } else {
-            System.out.println("Please enter valid username and password!");
-        }
+       //LOGIN BUTTON WITH DATABASE
+       //CONNECTOR = SCHEMA
+       //username and password = TABLE DATA
+       try {
+           Class.forName("com.mysql.cj.jdbc.Driver");
+           Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/connector","root","root");
+           String sql = "SELECT * FROM connector WHERE username = ? AND password = ?";
+          
+          String username = email.getText();
+          String password = pass.getText();
+          
+          PreparedStatement stm = con.prepareStatement(sql);
+          stm.setString(1, username);
+          stm.setString(2, password);
+          ResultSet rs = stm.executeQuery();
+           
+          if (rs.next()) {
+              dispose();
+              Frame2 hpage = new Frame2();
+              hpage.show();
+          } else {
+              JOptionPane.showMessageDialog(rootPane, "Wrong username or password.");
+              email.setText("");
+              pass.setText("");
+          }
+          con.close();
+           
+       } catch(Exception e) {
+           System.out.println(e.getMessage());
+       }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -276,12 +338,17 @@ public class Frame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField email;
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -290,7 +357,6 @@ public class Frame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
-    private javax.swing.JPasswordField passfield1;
-    private javax.swing.JTextField textfield1;
+    private javax.swing.JPasswordField pass;
     // End of variables declaration//GEN-END:variables
 }
